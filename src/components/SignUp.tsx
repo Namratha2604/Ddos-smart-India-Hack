@@ -26,11 +26,11 @@ export function SignUp() {
 		const promise = axios.post("/api/signup", user);
 
 		promise
-			.then((response) => {
+			.then(() => {
 				setLoading(false);
 				router.push("/login");
 			})
-			.catch((error) => {
+			.catch(() => {
 				setLoading(false);
 			});
 	}

@@ -1,10 +1,9 @@
 import axios from "axios";
 import DataSet from "@/models/dataset.model"; 
-import mongoose from "mongoose";
 import { connectDb } from "@/database/db.config";
 
 connectDb();
-export async function GET(req: Request, res: Response) {
+export async function GET(req: Request) {
   try {
     // Fetch IP, method, protocol, and current time
     const ip = req.headers.get('x-forwarded-for') || "Unknown IP"; // Use default if IP is missing
@@ -33,8 +32,10 @@ export async function GET(req: Request, res: Response) {
       const dataset = await DataSet.create({
          ip,
          location: {
-         country: country_name,
-         city: city,
+          country: country_name,
+          city: city,
+          lat,
+          long
          },
          protocol,
          time: currentTime,
