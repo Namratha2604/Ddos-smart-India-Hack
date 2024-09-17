@@ -14,7 +14,7 @@ export async function GET(req: Request, res: Response) {
     const port = req.headers.get('x-forwarded-port') || 80; // Default port
 
 
-    const getIpInfo = await axios.get("http://ip-api.com/json/192.168.143.184?fields=status,message,country,region,regionName,city,lat,lon,isp,org,mobile");
+    const getIpInfo = await axios.get(`http://ip-api.com/json/${ip}?fields=status,message,country,region,regionName,city,lat,lon,isp,org,mobile`);
 
     console.log(getIpInfo);
     
