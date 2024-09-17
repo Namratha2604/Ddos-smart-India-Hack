@@ -36,7 +36,7 @@ export function Login() {
 		}
 
 		toast({title: "Logged in Successfully"})
-		router.replace("/home");
+		router.replace("/");
 	}
 
   useEffect(()=>{
