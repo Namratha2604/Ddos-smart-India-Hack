@@ -8,6 +8,7 @@ import { Shield, Target } from "lucide-react"
 import { Box } from "lucide-react"
 import { Star } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { Mail, Phone, MapPin, ChevronRight } from "lucide-react"
 
 export default function Component() {
   return (
@@ -417,6 +418,111 @@ export default function Component() {
           </p>
         </form>
       </section>
+    </div>
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="mb-12">
+        <h6 className="text-sm font-semibold mb-2">Connect</h6>
+        <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
+        <p className="text-muted-foreground">We're here to assist with your inquiries.</p>
+      </div>
+      
+      <div className="grid md:grid-cols-2 gap-8">
+        <div className="space-y-8">
+          <div>
+            <div className="flex items-center mb-2">
+              <Mail className="mr-2 h-5 w-5" />
+              <h2 className="text-xl font-semibold">Email</h2>
+            </div>
+            <p className="text-sm text-muted-foreground mb-1">Reach us via email.</p>
+            <a href="mailto:info@mod.gov.in" className="text-primary hover:underline">info@mod.gov.in</a>
+          </div>
+          
+          <div>
+            <div className="flex items-center mb-2">
+              <Phone className="mr-2 h-5 w-5" />
+              <h2 className="text-xl font-semibold">Phone</h2>
+            </div>
+            <p className="text-sm text-muted-foreground mb-1">Call us anytime.</p>
+            <a href="tel:+911234567890" className="text-primary hover:underline">+91 12345 67890</a>
+          </div>
+          
+          <div>
+            <div className="flex items-center mb-2">
+              <MapPin className="mr-2 h-5 w-5" />
+              <h2 className="text-xl font-semibold">Office</h2>
+            </div>
+            <p className="text-sm text-muted-foreground mb-1">Ministry of Defence, New Delhi, India</p>
+            <a href="#" className="text-primary hover:underline inline-flex items-center">
+              Get Directions
+              <ChevronRight className="ml-1 h-4 w-4" />
+            </a>
+          </div>
+        </div>
+        
+        <div className="bg-muted rounded-lg aspect-video flex items-center justify-center">
+          <svg
+            className=" text-muted-foreground"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect height="18" rx="2" ry="2" width="18" x="3" y="3" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <path d="M21 15l-5-5L5 21" />
+          </svg>
+        </div>
+      </div>
+      
+      <div className="mt-16 border-t pt-8">
+        <div className="grid md:grid-cols-4 gap-8">
+          <div className="md:col-span-2">
+            <h3 className="text-2xl font-bold mb-4">Logo</h3>
+            <p className="text-sm text-muted-foreground mb-4">Subscribe to our newsletter for the latest updates on features and releases.</p>
+            <form className="flex gap-2">
+              <Input placeholder="Your email here" type="email" />
+              <Button type="submit">Join</Button>
+            </form>
+            <p className="text-xs text-muted-foreground mt-2">By subscribing, you consent to our Privacy Policy and receive updates from us.</p>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold mb-4">Quick Links</h4>
+            <ul className="space-y-2 text-sm">
+              <li><a href="#" className="text-muted-foreground hover:text-primary">About Us</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary">Contact Us</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary">Support Center</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary">Careers</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary">FAQ</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold mb-4">Connect With Us</h4>
+            <ul className="space-y-2 text-sm">
+              <li><a href="#" className="text-muted-foreground hover:text-primary">Events</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary">Newsroom</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary">Resources</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary">Blog</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary">Community</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div className="mt-8 border-t pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p className="text-sm text-muted-foreground">© 2024 Ministry of Defence. All rights reserved.</p>
+        <div className="flex gap-4 mt-4 md:mt-0">
+          <a href="#" className="text-muted-foreground hover:text-primary">Privacy Policy</a>
+          <a href="#" className="text-muted-foreground hover:text-primary">Terms of Use</a>
+          <a href="#" className="text-muted-foreground hover:text-primary">Cookie Settings</a>
+        </div>
+      </div>
     </div>
     </div>
     
