@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -6,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Shield, Target } from "lucide-react"
 import { Box } from "lucide-react"
 import { Star } from "lucide-react"
-
+import { Input } from "@/components/ui/input"
 
 export default function Component() {
   return (
@@ -335,6 +336,87 @@ export default function Component() {
           ))}
         </div>
       </div>
+    </div>
+    <div className="container mx-auto px-4 py-8 space-y-12">
+      <section className="space-y-4">
+        <h2 className="text-3xl font-bold">What They Say</h2>
+        <p className="text-lg text-muted-foreground">
+          Their experiences shape our mission and commitment to excellence.
+        </p>
+        <div className="grid md:grid-cols-2 gap-6">
+          {[
+            {
+              quote: "The support from the Ministry has been invaluable to us.",
+              name: "Rajesh Kumar",
+              title: "Captain, Indian Army",
+            },
+            {
+              quote: "Working together, we achieve greater security for our nation.",
+              name: "Anita Sharma",
+              title: "Major, Defence Ministry",
+            },
+          ].map((testimonial, index) => (
+            <Card key={index}>
+              <CardContent className="p-6 space-y-4">
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-current text-yellow-400" />
+                  ))}
+                </div>
+                <p className="text-lg font-medium">"{testimonial.quote}"</p>
+                <div className="flex items-center space-x-4">
+                  <Image
+                    src="/placeholder.svg"
+                    alt={testimonial.name}
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                  <div>
+                    <p className="font-semibold">{testimonial.name}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.title}</p>
+                  </div>
+                  <Image
+                    src="/placeholder.svg"
+                    alt="Webflow"
+                    width={80}
+                    height={30}
+                    className="ml-auto"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-3xl font-bold">Join Us in Serving India</h2>
+        <p className="text-lg text-muted-foreground">
+          Discover how you can make a difference today.
+        </p>
+        <div className="flex space-x-4">
+          <Button variant="default">Learn More</Button>
+          <Button variant="outline">Get Involved</Button>
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-3xl font-bold">Stay Informed with Our Newsletter</h2>
+        <p className="text-lg text-muted-foreground">
+          Subscribe to receive the latest updates and important announcements from the Ministry of Defence.
+        </p>
+        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+          <div className="flex space-x-4">
+            <Input type="email" placeholder="Your Email Here" className="flex-grow" />
+
+            <Button type="submit">Subscribe Now</Button>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            By clicking Subscribe Now, you agree to our Terms and Conditions.
+          </p>
+        </form>
+      </section>
     </div>
     </div>
     
