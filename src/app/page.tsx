@@ -121,7 +121,7 @@ const VerificationPage = () => {
 			}
 		}
 	};
-
+//this is new branch
 	return (
 		<div className="flex justify-center items-center min-h-screen">
 			<div className="flex flex-col items-center p-8 rounded-lg border border-white/20 backdrop-blur-lg shadow-lg bg-transparent">
