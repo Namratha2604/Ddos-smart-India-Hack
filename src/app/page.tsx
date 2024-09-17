@@ -45,9 +45,9 @@ export default function Component() {
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
-            <h1 className="text-4xl font-bold mb-4">Empowering India's Defence for a Secure Future</h1>
+            <h1 className="text-4xl font-bold mb-4">Empowering India&apos;s Defence for a Secure Future</h1>
             <p className="mb-6">
-              Welcome to the Ministry of Defence India, where we are dedicated to safeguarding our nation's
+              Welcome to the Ministry of Defence India, where we are dedicated to safeguarding our nation&apos;s
               sovereignty and ensuring peace. Join us in our mission to strengthen our armed forces and foster national
               security.
             </p>
@@ -171,7 +171,7 @@ export default function Component() {
       
       <div className="flex flex-col md:flex-row gap-8 items-center">
         <div className="md:w-1/2">
-          <h2 className="text-2xl font-bold mb-4">Key Statistics of India's Defence Forces</h2>
+          <h2 className="text-2xl font-bold mb-4">Key Statistics of India&apos;s Defence Forces</h2>
           <p className="mb-4">
             India boasts one of the largest armed forces in the world, with over 1.4 million active personnel. Our commitment to national security is reflected in our robust defense capabilities.
           </p>
@@ -229,7 +229,7 @@ export default function Component() {
       
       <div className="flex flex-col md:flex-row gap-8 items-center">
         <div className="md:w-1/2">
-          <h2 className="text-2xl font-bold mb-4">Key Statistics of India's Defence Forces</h2>
+          <h2 className="text-2xl font-bold mb-4">Key Statistics of India&apos;s Defence Forces</h2>
           <p className="mb-4">
             India boasts one of the largest armed forces in the world, with over 1.4 million active personnel. Our commitment to national security is reflected in our robust defense capabilities.
           </p>
@@ -255,7 +255,7 @@ export default function Component() {
         <div>
           <h1 className="text-4xl font-bold mb-4">Understanding the Ministry of Defence Structure</h1>
           <p className="text-lg text-muted-foreground">
-            The Ministry of Defence plays a crucial role in ensuring national security and defense policy formulation. It oversees the armed forces and coordinates with various departments to maintain operational readiness. Through strategic planning and resource management, the ministry safeguards the nation's interests.
+            The Ministry of Defence plays a crucial role in ensuring national security and defense policy formulation. It oversees the armed forces and coordinates with various departments to maintain operational readiness. Through strategic planning and resource management, the ministry safeguards the nation&apos;s interests.
           </p>
         </div>
       </div>
