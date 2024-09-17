@@ -16,16 +16,7 @@ const datasetSchema = new mongoose.Schema({
         {
             type:String,
             required:true  
-        },
-        lat:{
-         type:Number,
-         required: true
-        },
-        long:{
-         type:Number,
-         required:true
-        }
-        
+        },        
     },
     protocol:
     {
@@ -45,6 +36,14 @@ const datasetSchema = new mongoose.Schema({
     method:{
       type: String,
       required: true
+    }, 
+    isp: {
+        type: String, 
+        required: true
+    },
+    org: {
+        type: String,
+        required: true,
     }
 })
 
