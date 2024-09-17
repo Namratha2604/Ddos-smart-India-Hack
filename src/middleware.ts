@@ -1,8 +1,6 @@
-import { NextRequest } from "next/server";
 export { default } from "next-auth/middleware";
-import { getToken } from "next-auth/jwt";
 
-export async function middleware(request: NextRequest) {
+export async function middleware() {
 	// const token = await getToken({ req: request });
 	// const url = request.nextUrl;
 	// const isPublicPath =

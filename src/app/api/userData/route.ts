@@ -29,7 +29,7 @@ export async function GET(req: Request) {
       const city = getIpInfo.data.city;
       const lat = getIpInfo.data.lat;
       const long = getIpInfo.data.long;
-      const dataset = await DataSet.create({
+      await DataSet.create({
          ip,
          location: {
           country: country_name,

@@ -34,10 +34,14 @@ export async function POST(req: NextRequest) {
 			},
 			{ status: 201 }
 		);
-	} catch (error: any) {
-		return NextResponse.json(
-			{ message: error.message },
-			{ status: 500 }
-		);
-	}
+	} catch (error: unknown) {
+    const message = typeof error === 'object' && error !== null && 'message' in error
+        ? (error as Error).message
+        : "An unknown error occurred";
+
+    return NextResponse.json(
+        { message },
+        { status: 500 }
+    );
+}
 }
