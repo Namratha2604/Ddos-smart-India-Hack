@@ -39,7 +39,11 @@ export default function VerificationPage() {
       const temp = res.data.message.join("");
       setCorrectSequence(temp);
     }
+    async function getUserData(){
+      const res = await axios.get("/api/userData");
+    }
 
+    getUserData();
     getCaptcha();
   },[]);
 
