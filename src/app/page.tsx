@@ -7,6 +7,7 @@ const VerificationPage = () => {
 	const [inputValues, setInputValues] = useState(Array(6).fill(""));
 	const [captchaChars, setCaptchaChars] = useState(generateCaptchaChars());
 	const [currentFocus, setCurrentFocus] = useState(0);
+	const router = useRouter();
 	const getInitialTime = () => {
 		const storedSeconds = localStorage.getItem("seconds");
 
@@ -16,12 +17,16 @@ const VerificationPage = () => {
 	};
 
 	const [seconds, setSeconds] = useState(getInitialTime().seconds);
+
 	useEffect(() => {
+		// Timer logic
 		const timerInterval = setInterval(() => {
 			if (seconds > 0) {
 				setSeconds(seconds - 1);
 			} else {
-				clearInterval(timerInterval);
+				// When the timer hits zero, refresh the page and reset the timer
+				localStorage.clear();  // Clear the stored timer state
+				window.location.reload();  // Force a full page reload
 			}
 		}, 1000);
 
@@ -30,8 +35,6 @@ const VerificationPage = () => {
 
 		return () => clearInterval(timerInterval);
 	}, [seconds]);
-
-	const router = useRouter();
 
 	function generateRandomChar() {
 		const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
