@@ -39,57 +39,63 @@ export default function VerificationPage() {
       const temp = res.data.message.join("");
       setCorrectSequence(temp);
     }
-    async function getUserData(){
-      const res = await axios.get("/api/userData");
-    }
-
-    getUserData();
+   
     getCaptcha();
   },[]);
 
   useEffect(() => {
-
+    let blockInterval: NodeJS.Timeout;
     const blockTime = getBlockTime();
-		if (blockTime && Date.now() < blockTime) {
-			setIsBlocked(true);
-			const remainingTime = Math.floor((blockTime - Date.now()) / 1000);
-			setSeconds(remainingTime);
-			const blockInterval = setInterval(() => {
-				setSeconds((prev) => prev - 1);
-				if (remainingTime <= 0) {
-					clearInterval(blockInterval);
-					setIsBlocked(false);
-					localStorage.removeItem("blockTime");
-				}
-			}, 1000);
-			return () => clearInterval(blockInterval);
-		}
-
-    const timerInterval = setInterval(() => {
-      setSeconds((prevSeconds) => {
-        if (prevSeconds > 0) {
-          localStorage.setItem("seconds", (prevSeconds - 1).toString());
-          return prevSeconds - 1;
-        } else {
-          localStorage.clear();
-          window.location.reload();
-        }
-        clearInterval(timerInterval);
-        return 0;
-      });
-    }, 1000);
-
-    return () => clearInterval(timerInterval);
+    let initialSeconds = 59;
+    
+    // Load the remaining seconds from localStorage (if they exist)
+    const storedSeconds = localStorage.getItem("seconds");
+    if (storedSeconds) {
+      initialSeconds = parseInt(storedSeconds);
+      setSeconds(initialSeconds);
+    }
+  
+    // Start the countdown logic
+    const startCountdown = () => {
+      blockInterval = setInterval(() => {
+        setSeconds((prev) => {
+          if (prev > 0) {
+            const updatedSeconds = prev - 1;
+            localStorage.setItem("seconds", updatedSeconds.toString()); 
+            return updatedSeconds;
+          } else {
+            clearInterval(blockInterval);
+            setIsBlocked(false);
+            localStorage.removeItem("blockTime");
+            localStorage.removeItem("seconds");
+            window.location.reload(); // Reload->0
+            return 0;
+          }
+        });
+      }, 1000);
+    };
+  
+    // Check if -> existing block time
+    if (blockTime && Date.now() < blockTime) {
+      setIsBlocked(true);
+      const remainingTime = Math.floor((blockTime - Date.now()) / 1000);
+      setSeconds(remainingTime > initialSeconds ? initialSeconds : remainingTime);
+      startCountdown(); 
+    } else {
+      startCountdown(); 
+    }
+  
+    return () => clearInterval(blockInterval); 
   }, []);
-
+  
   const getBlockTime = () => {
-		if (isBrowser()) {
-			const storedBlockTime = localStorage.getItem("blockTime");
-			return storedBlockTime ? parseInt(storedBlockTime) : null;
-		}
-		return null;
-	};
-
+    if (isBrowser()) {
+      const storedBlockTime = localStorage.getItem("blockTime");
+      return storedBlockTime ? parseInt(storedBlockTime) : null;
+    }
+    return null;
+  };
+  
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -110,8 +116,8 @@ export default function VerificationPage() {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-   e.preventDefault();
-		const correctSequence = captchaChars.join("");
+    e.preventDefault();
+    const correctSequence = captchaChars.join("");
 
 		if (isBlocked) {
 			toast({title:"You are blocked. Please try again after 1 minute."});
@@ -140,8 +146,6 @@ export default function VerificationPage() {
 					.catch((error) => console.error("API Error:", error));
 			} else {
 				toast({title:"Incorrect, try again!"});
-        localStorage.clear();
-          window.location.reload();
 			}
 		}
   };
@@ -197,4 +201,3 @@ export default function VerificationPage() {
     </div>
   );
 }
-

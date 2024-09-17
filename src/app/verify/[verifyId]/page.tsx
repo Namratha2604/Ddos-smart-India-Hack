@@ -1,10 +1,10 @@
 "use client";
-import { Shield } from "lucide-react";
+import { Router, Shield } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Component() {
@@ -17,6 +17,7 @@ export default function Component() {
   const pathName = usePathname();
   const id = pathName.split("/verify/")[1];
   let idArray = id.split("");
+  const router = useRouter();
   //   const antiPhishingAnswerArray: Array<string> = [];
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export default function Component() {
         title: "Success",
         description: "Correct code entered!",
       });
+      router.push("/login");
     } else {
       toast({
         title: "Incorrect code",

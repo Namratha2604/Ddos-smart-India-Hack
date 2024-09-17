@@ -1,33 +1,55 @@
 import axios from "axios";
+import DataSet from "@/models/dataset.model"; 
+import mongoose from "mongoose";
+import { connectDb } from "@/database/db.config";
 
-export async function GET(req:Request, res: Response){
-   console.log(req);
-   const ip = req.headers.get('x-forwarded-for') ;
-   const method = req.method;
-   const protocol = req.headers.get('x-forwarded-proto') 
-   const currentTime = Date.now();
-   const date = new Date(currentTime);
-   const hours = date.getHours().toString().padStart(2, '0'); // Zero-padded hours
-   const minutes = date.getMinutes().toString().padStart(2, '0'); // Zero-padded minutes
-   const seconds = date.getSeconds().toString().padStart(2, '0'); // Zero-padded seconds
-   const formattedTime = `${hours}:${minutes}:${seconds}`;
+connectDb();
+export async function GET(req: Request, res: Response) {
+  try {
+    // Fetch IP, method, protocol, and current time
+    const ip = req.headers.get('x-forwarded-for') || "Unknown IP"; // Use default if IP is missing
+    const method = req.method;
+    const protocol = req.headers.get('x-forwarded-proto') || "http"; // Default protocol to http
+    const currentTime = Math.floor(Date.now() / 1000); // Time in seconds (UNIX timestamp)
+    const port = req.headers.get('x-forwarded-port') || 80; // Default port
 
-   const apikey = "920671e52fd64b07b7bed66c8ecb97d7";
-   const apiUrl = `https://api.ipgeolocation.io/ipgeo?apiKey=${apikey}`;
+
+    const getIpInfo = await axios.get("http://ip-api.com/json/192.168.143.184?fields=status,message,country,region,regionName,city,lat,lon,isp,org,mobile");
+
+    console.log(getIpInfo);
+    
+    // Make an API call to get geolocation data
+   //  const response = await axios.get(apiUrl);192.168.143.184
+   //  const location = response.data;
+
+   //  const { country_name, state_prov, city } = location;
+
+    // Create and save the dataset object in MongoDB
+    if(getIpInfo.data.status === "success"){
+       const country_name = getIpInfo.data.country;
+      const city = getIpInfo.data.city;
+      const lat = getIpInfo.data.lat;
+      const long = getIpInfo.data.long;
+      const dataset = await DataSet.create({
+         ip,
+         location: {
+         country: country_name,
+         city: city,
+         },
+         protocol,
+         time: currentTime,
+         port: Number(port), // Ensure port is an integer
+         method
+      });
+    }
    
 
-   // const userAgent = await axios.get(`https://api.ipgeolocation.io/user-agent?apiKey=${apikey}`)
-   
-   // const response = await axios.get(apiUrl);
 
-
-   console.log(formattedTime);
-   console.log(ip,  method, protocol);
-   // const { country_name, state_prov, city, latitude, longitude } = response.data;
-
-
-   // console.log(country_name, state_prov, city,latitude, longitude);
-   
-
-   return Response.json({ success: true, message: "lund" }, { status: 200 });
+    // Return success response
+    return Response.json({ success: true, message: "Data saved successfully" }, { status: 200 });
+    
+  } catch (error) {
+    console.error("Error:", error);
+    return Response.json({ success: false, message: "Failed to save data" }, { status: 500 });
+  }
 }
