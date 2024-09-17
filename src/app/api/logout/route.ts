@@ -1,5 +1,5 @@
 import { connectDb } from "@/database/db.config";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 connectDb();
 
@@ -15,10 +15,14 @@ export async function GET() {
 		});
 
 		return response;
-	} catch (error: any) {
-		return NextResponse.json(
-			{ error: error.message },
-			{ status: 400 }
-		);
-	}
+	} catch (error: unknown) {
+    const message = typeof error === 'object' && error !== null && 'message' in error
+        ? (error as Error).message
+        : "An unknown error occurred";
+
+    return NextResponse.json(
+        { message },
+        { status: 500 }
+    );
+}
 }
