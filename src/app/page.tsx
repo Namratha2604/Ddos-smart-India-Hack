@@ -1,113 +1,132 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { createId } from "crypto-id";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
-const VerificationPage = () => {
-  const [inputValues, setInputValues] = useState(Array(6).fill(""));
-  const [captchaChars, setCaptchaChars] = useState(generateCaptchaChars());
+function generateRandomChar() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  return chars.charAt(Math.floor(Math.random() * chars.length));
+}
+
+function generateCaptchaChars() {
+  return Array.from({ length: 6 }, generateRandomChar);
+}
+
+export default function VerificationPage() {
+  const [inputValues, setInputValues] = useState<string[]>(Array(6).fill(""));
+  const [captchaChars, setCaptchaChars] = useState<string[]>(
+    generateCaptchaChars()
+  );
   const [currentFocus, setCurrentFocus] = useState(0);
-  const getInitialTime = () => {
+  const [seconds, setSeconds] = useState(() => {
     const storedSeconds = localStorage.getItem("seconds");
-
-    return {
-      seconds: storedSeconds ? parseInt(storedSeconds) : 59,
-    };
-  };
-
-  const [seconds, setSeconds] = useState(getInitialTime().seconds);
-  useEffect(() => {
-    const timerInterval = setInterval(() => {
-      if (seconds > 0) {
-        setSeconds(seconds - 1);
-      } else {
-        clearInterval(timerInterval);
-      }
-    }, 1000);
-
-    // Save the timer state to localStorage
-    localStorage.setItem("seconds", seconds.toString());
-
-    return () => clearInterval(timerInterval);
-  }, [seconds]);
+    return storedSeconds ? parseInt(storedSeconds) : 59;
+  });
 
   const router = useRouter();
+  const { toast } = useToast();
 
-  function generateRandomChar() {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    return chars.charAt(Math.floor(Math.random() * chars.length));
-  }
+  useEffect(() => {
+    const timerInterval = setInterval(() => {
+      setSeconds((prevSeconds) => {
+        if (prevSeconds > 0) {
+          localStorage.setItem("seconds", (prevSeconds - 1).toString());
+          return prevSeconds - 1;
+        }
+        clearInterval(timerInterval);
+        return 0;
+      });
+    }, 1000);
 
-  function generateCaptchaChars() {
-    return Array.from({ length: 6 }, generateRandomChar);
-  }
+    return () => clearInterval(timerInterval);
+  }, []);
 
-  const handleInputChange = (e: any, index: any) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     const value = e.target.value.toUpperCase();
-    const newInputValues = [...inputValues];
-    newInputValues[index] = value;
-    setInputValues(newInputValues);
+    setInputValues((prev) => {
+      const newInputValues = [...prev];
+      newInputValues[index] = value;
+      return newInputValues;
+    });
+
+    // Move focus to the next input
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`captcha-input-${index + 1}`);
+      nextInput?.focus();
+    }
   };
 
-  const handleFocus = (index: any) => {
-    setCurrentFocus(index);
-  };
-
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const correctSequence = captchaChars.join("");
     if (inputValues.join("") === correctSequence) {
-      alert("Solved!");
+      toast({
+        title: "Verification Successful",
+        description: "You have successfully solved the captcha.",
+      });
       const id = createId(52);
       router.replace(`/verify/${id}`);
     } else {
-      alert("Incorrect, try again!");
+      toast({
+        title: "Verification Failed",
+        description: "Incorrect captcha. Please try again.",
+        variant: "destructive",
+      });
+      setInputValues(Array(6).fill(""));
+      setCaptchaChars(generateCaptchaChars());
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="flex flex-col items-center p-8 rounded-lg border border-white/20 backdrop-blur-lg shadow-lg bg-transparent">
-        <form onSubmit={handleSubmit} className="text-center w-full">
-          <h1 className="text-white text-2xl mb-4">DDos Protection</h1>
-          <p className="text-white mb-6">
-            Select each text box and enter the letter or <br /> number you see
-            within the circle below
-          </p>
-          <div className="mb-5 w-full flex justify-center">
-            <div className="bg-white text-black text-xl rounded-full w-12 h-12 flex items-center justify-center">
-              {captchaChars[currentFocus]}
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-neutral-950">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">
+            DDoS Protection
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <p className="text-center text-sm text-muted-foreground">
+              Select each text box and enter the letter or number you see within
+              the circle below
+            </p>
+            <div className="flex justify-center">
+              <div className="bg-primary text-primary-foreground text-xl rounded-full w-12 h-12 flex items-center justify-center">
+                {captchaChars[currentFocus]}
+              </div>
             </div>
-          </div>
-          <div className="flex justify-center gap-4 mb-2">
-            {inputValues.map((value, index) => (
-              <div key={index} className="">
-                <input
+            <div className="flex justify-center gap-2">
+              {inputValues.map((value, index) => (
+                <Input
+                  key={index}
+                  id={`captcha-input-${index}`}
                   type="text"
                   maxLength={1}
                   value={value}
                   onChange={(e) => handleInputChange(e, index)}
-                  onFocus={() => handleFocus(index)}
-                  className="text-center text-black text-lg w-10 h-10 border rounded-md"
+                  onFocus={() => setCurrentFocus(index)}
+                  className="w-10 h-10 text-center text-lg"
                 />
-              </div>
-            ))}
-          </div>
-          <div className="h-10 rounded-full w-full flex items-center justify-center">
-            <span className="font-bold">
+              ))}
+            </div>
+            <div className="text-center font-bold text-2xl">
               {seconds.toString().padStart(2, "0")}
-            </span>
-          </div>
-          <button
-            type="submit"
-            className="w-full h-12 bg-white text-gray-800 font-semibold rounded-full shadow hover:bg-gray-800 hover:text-white transition-colors duration-300"
-          >
-            Verify
-          </button>
-        </form>
-      </div>
+            </div>
+            <Button type="submit" className="w-full">
+              Verify
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default VerificationPage;
+}
