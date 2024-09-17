@@ -45,9 +45,9 @@ export default function Component() {
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
-            <h1 className="text-4xl font-bold mb-4">Empowering India&apos;s Defence for a Secure Future</h1>
+            <h1 className="text-4xl font-bold mb-4">Empowering India's Defence for a Secure Future</h1>
             <p className="mb-6">
-              Welcome to the Ministry of Defence India, where we are dedicated to safeguarding our nation&apos;s
+              Welcome to the Ministry of Defence India, where we are dedicated to safeguarding our nation's
               sovereignty and ensuring peace. Join us in our mission to strengthen our armed forces and foster national
               security.
             </p>
