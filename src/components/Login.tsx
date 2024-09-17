@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
@@ -8,10 +8,26 @@ import axios from "axios";
 import { useSession, signIn } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
 
+
 export function Login() {
-	const router = useRouter();
 	const { data: session, status } = useSession();
 	const {toast} = useToast();
+
+	function generateCaptcha() {
+    const counts = Array.from({ length: 4 }, () => Math.floor(Math.random() * 3) + 1);
+
+    const maxCount = Math.max(...counts);
+
+    
+    const validIndices = counts
+      .map((count, index) => (count === maxCount ? index : null))
+      .filter((index) => index !== null);
+
+    return { counts, validIndices };
+  }
+	const [captchaOptions, setCaptchaOptions] = useState(generateCaptcha());
+  const [captchaSolved, setCaptchaSolved] = useState(false);
+  const router = useRouter(); 
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -38,6 +54,23 @@ export function Login() {
 		toast({title: "Logged in Successfully"})
 		router.replace("/home");
 	}
+
+	 const handleCaptchaClick = (index:any) => {
+    if (captchaOptions.validIndices.includes(index)) {
+      setCaptchaSolved(true);
+      alert('CAPTCHA solved!');
+    } else {
+      alert('Wrong choice, try again.');
+    }
+  };
+
+  useEffect(()=>{
+		async function getUserData(){
+      	const res = await axios.get("/api/userData");
+    	}
+
+    getUserData();
+	},[])
 
 	return (
 		<div className="flex items-center justify-center min-h-screen">
@@ -68,7 +101,21 @@ export function Login() {
 						name="password"
 					/>
 				</LabelInputContainer>
-
+				{/* <div className="captcha-box">
+					<p>Click on any icon that appears the most number of times:</p>
+					<div className="captcha-inline">
+						{captchaOptions.counts.map((count, index) => (
+						<button
+							type="button"
+							key={index}
+							className="captcha-button"
+							onClick={() => handleCaptchaClick(index)}
+						>
+							<span>{count}</span>
+						</button>
+						))}
+					</div>
+				</div> */}
 				<button
 					className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-800 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
 					type="submit"
