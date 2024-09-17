@@ -15,7 +15,7 @@ export async function GET(req: Request) {
     const port = req.headers.get('x-forwarded-port') || 80; // Default port
 
     const apiKey = "920671e52fd64b07b7bed66c8ecb97d7"
-    const res = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}`)
+    const res = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}&ip=${ip}`)
     console.log(res);
 
     if(res.status === 200){
