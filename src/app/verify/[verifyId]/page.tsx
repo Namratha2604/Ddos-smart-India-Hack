@@ -1,10 +1,10 @@
 "use client";
-import { Router, Shield } from "lucide-react";
+import { Shield } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Component() {
@@ -16,7 +16,7 @@ export default function Component() {
   const { toast } = useToast();
   const pathName = usePathname();
   const id = pathName.split("/verify/")[1];
-  let idArray = id.split("");
+  const idArray = id.split("");
   const router = useRouter();
   //   const antiPhishingAnswerArray: Array<string> = [];
 

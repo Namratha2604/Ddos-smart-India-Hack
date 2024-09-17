@@ -1,18 +1,14 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest } from "next/server";
 export { default } from "next-auth/middleware";
 import { getToken } from "next-auth/jwt";
-import mongoose from "mongoose";
-import { connectDb } from "./database/db.config";
-import DataSet from "./models/dataset.model";
-import axios from "axios";
 
 export async function middleware(request: NextRequest) {
-	const token = await getToken({ req: request });
-	const url = request.nextUrl;
-	const isPublicPath =
-		url.pathname.startsWith("/login") ||
-		url.pathname.startsWith("/signup") ||
-		url.pathname.startsWith("/captcha");
+	// const token = await getToken({ req: request });
+	// const url = request.nextUrl;
+	// const isPublicPath =
+	// 	url.pathname.startsWith("/login") ||
+	// 	url.pathname.startsWith("/signup") ||
+	// 	url.pathname.startsWith("/captcha");
 
 
 	

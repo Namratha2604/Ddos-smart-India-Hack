@@ -7,9 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import bcrypt from 'bcrypt'
 import axios from "axios";
-import { LoaderCircleIcon } from "lucide-react";
 
 export default function VerificationPage() {
   const [inputValues, setInputValues] = useState<string[]>(Array(6).fill(""));
@@ -117,8 +115,6 @@ export default function VerificationPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const correctSequence = captchaChars.join("");
-
 		if (isBlocked) {
 			toast({title:"You are blocked. Please try again after 1 minute."});
 			return;

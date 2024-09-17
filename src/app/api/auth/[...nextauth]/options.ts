@@ -9,7 +9,7 @@ export const authOptions: NextAuthOptions = {
 		CredentialsProvider({
 			id: "credentials",
 			name: "credentials",
-			async authorize(credentials: any): Promise<any> {
+			async authorize(credentials:any){
 				await connectDb();
 				try {
 					const { email, password } = credentials;

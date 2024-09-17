@@ -5,28 +5,12 @@ import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { useSession, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
 
 
 export function Login() {
-	const { data: session, status } = useSession();
 	const {toast} = useToast();
-
-	function generateCaptcha() {
-    const counts = Array.from({ length: 4 }, () => Math.floor(Math.random() * 3) + 1);
-
-    const maxCount = Math.max(...counts);
-
-    
-    const validIndices = counts
-      .map((count, index) => (count === maxCount ? index : null))
-      .filter((index) => index !== null);
-
-    return { counts, validIndices };
-  }
-	const [captchaOptions, setCaptchaOptions] = useState(generateCaptcha());
-  const [captchaSolved, setCaptchaSolved] = useState(false);
   const router = useRouter(); 
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -55,18 +39,9 @@ export function Login() {
 		router.replace("/home");
 	}
 
-	 const handleCaptchaClick = (index:any) => {
-    if (captchaOptions.validIndices.includes(index)) {
-      setCaptchaSolved(true);
-      alert('CAPTCHA solved!');
-    } else {
-      alert('Wrong choice, try again.');
-    }
-  };
-
   useEffect(()=>{
 		async function getUserData(){
-      	const res = await axios.get("/api/userData");
+      	await axios.get("/api/userData");
     	}
 
     getUserData();

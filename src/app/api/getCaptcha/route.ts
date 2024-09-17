@@ -1,4 +1,4 @@
-export async function GET(req: Request, res: Response) {
+export async function GET() {
 
   const chars = "02678CDEHKPTVX";
   const randomChars =  Array.from({ length: 6 }, ()=>chars.charAt(Math.floor(Math.random() * chars.length)));;
