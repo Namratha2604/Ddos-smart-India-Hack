@@ -110,7 +110,7 @@ export default function VerificationPage() {
 		const correctSequence = captchaChars.join("");
 
 		if (isBlocked) {
-			alert("You are blocked. Please try again after 1 minute.");
+			toast({title:"You are blocked. Please try again after 1 minute."});
 			return;
 		}
 
@@ -131,7 +131,7 @@ export default function VerificationPage() {
 						setIsBlocked(true);
 						setSeconds(60); 
 						toast({title:"You have been blocked for 1 minute."});
-						router.replace("/blockedPage"); 
+						router.replace("/blocked"); 
 					})
 					.catch((error) => console.error("API Error:", error));
 			} else {

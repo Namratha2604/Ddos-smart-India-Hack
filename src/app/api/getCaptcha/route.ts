@@ -1,4 +1,3 @@
-// import bcrypt from bcrypt;
 export async function GET(req: Request, res: Response) {
 
   const chars = "02678CDEHKPTVX";
