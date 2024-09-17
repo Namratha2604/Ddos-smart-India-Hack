@@ -7,36 +7,68 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-
-function generateRandomChar() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  return chars.charAt(Math.floor(Math.random() * chars.length));
-}
-
-function generateCaptchaChars() {
-  return Array.from({ length: 6 }, generateRandomChar);
-}
+import bcrypt from 'bcrypt'
+import axios from "axios";
+import { LoaderCircleIcon } from "lucide-react";
 
 export default function VerificationPage() {
   const [inputValues, setInputValues] = useState<string[]>(Array(6).fill(""));
-  const [captchaChars, setCaptchaChars] = useState<string[]>(
-    generateCaptchaChars()
-  );
+  const [captchaChars, setCaptchaChars] = useState<string[]>(Array(6).fill(""));
   const [currentFocus, setCurrentFocus] = useState(0);
-  const [seconds, setSeconds] = useState(() => {
+  const [correctSequence, setCorrectSequence] = useState<string>();
+  const [incorrectAttempts, setIncorrectAttempts] = useState(0);
+  const [seconds, setSeconds] = useState(59);
+  const [isBlocked, setIsBlocked] = useState(false); 
+  
+  
+  useEffect(() => {
     const storedSeconds = localStorage.getItem("seconds");
-    return storedSeconds ? parseInt(storedSeconds) : 59;
-  });
+    if (storedSeconds) {
+      setSeconds(parseInt(storedSeconds));
+    }
+  },[]);
 
   const router = useRouter();
   const { toast } = useToast();
+  const isBrowser = () => typeof window !== "undefined";
+
+  useEffect(()=> {
+    async function getCaptcha(){
+      const res = await axios.get("/api/getCaptcha");
+      setCaptchaChars(res.data.message);
+      const temp = res.data.message.join("");
+      setCorrectSequence(temp);
+    }
+
+    getCaptcha();
+  },[]);
 
   useEffect(() => {
+
+    const blockTime = getBlockTime();
+		if (blockTime && Date.now() < blockTime) {
+			setIsBlocked(true);
+			const remainingTime = Math.floor((blockTime - Date.now()) / 1000);
+			setSeconds(remainingTime);
+			const blockInterval = setInterval(() => {
+				setSeconds((prev) => prev - 1);
+				if (remainingTime <= 0) {
+					clearInterval(blockInterval);
+					setIsBlocked(false);
+					localStorage.removeItem("blockTime");
+				}
+			}, 1000);
+			return () => clearInterval(blockInterval);
+		}
+
     const timerInterval = setInterval(() => {
       setSeconds((prevSeconds) => {
         if (prevSeconds > 0) {
           localStorage.setItem("seconds", (prevSeconds - 1).toString());
           return prevSeconds - 1;
+        } else {
+          localStorage.clear();
+          window.location.reload();
         }
         clearInterval(timerInterval);
         return 0;
@@ -45,6 +77,15 @@ export default function VerificationPage() {
 
     return () => clearInterval(timerInterval);
   }, []);
+
+  const getBlockTime = () => {
+		if (isBrowser()) {
+			const storedBlockTime = localStorage.getItem("blockTime");
+			return storedBlockTime ? parseInt(storedBlockTime) : null;
+		}
+		return null;
+	};
+
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -65,25 +106,40 @@ export default function VerificationPage() {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const correctSequence = captchaChars.join("");
-    if (inputValues.join("") === correctSequence) {
-      toast({
-        title: "Verification Successful",
-        description: "You have successfully solved the captcha.",
-      });
-      const id = createId(52);
-      router.replace(`/verify/${id}`);
-    } else {
-      toast({
-        title: "Verification Failed",
-        description: "Incorrect captcha. Please try again.",
-        variant: "destructive",
-      });
-      setInputValues(Array(6).fill(""));
-      setCaptchaChars(generateCaptchaChars());
-    }
+   e.preventDefault();
+		const correctSequence = captchaChars.join("");
+
+		if (isBlocked) {
+			alert("You are blocked. Please try again after 1 minute.");
+			return;
+		}
+
+		if (inputValues.join("") === correctSequence) {
+			alert("Solved!");
+			const id = createId();
+			router.replace(`/verify/${id}`);
+		} else {
+			const newAttempts = incorrectAttempts + 1;
+			setIncorrectAttempts(newAttempts);
+
+			if (newAttempts >= 2) {
+				
+				fetch("/api/blockUser", { method: "POST", body: JSON.stringify({ id: createId() }) })
+					.then(() => {
+						const blockTime = Date.now() + 60000; 
+						localStorage.setItem("blockTime", blockTime.toString());
+						setIsBlocked(true);
+						setSeconds(60); 
+						toast({title:"You have been blocked for 1 minute."});
+						router.replace("/blockedPage"); 
+					})
+					.catch((error) => console.error("API Error:", error));
+			} else {
+				toast({title:"Incorrect, try again!"});
+			}
+		}
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-neutral-950">
@@ -100,9 +156,13 @@ export default function VerificationPage() {
               the circle below
             </p>
             <div className="flex justify-center">
-              <div className="bg-primary text-primary-foreground text-xl rounded-full w-12 h-12 flex items-center justify-center">
-                {captchaChars[currentFocus]}
+              {captchaChars[currentFocus]==="" ? "Loading..."
+              : 
+              <div className="bg-primary text-primary-foreground text-xl rounded-full w-20 h-20 flex items-center justify-center overflow-hidden">
+                <img src={`${captchaChars[currentFocus]}.jpg`} className="object-cover w-full h-full"/>
               </div>
+              }
+              
             </div>
             <div className="flex justify-center gap-2">
               {inputValues.map((value, index) => (
@@ -115,6 +175,7 @@ export default function VerificationPage() {
                   onChange={(e) => handleInputChange(e, index)}
                   onFocus={() => setCurrentFocus(index)}
                   className="w-10 h-10 text-center text-lg"
+                  disabled={isBlocked} 
                 />
               ))}
             </div>
@@ -122,7 +183,7 @@ export default function VerificationPage() {
               {seconds.toString().padStart(2, "0")}
             </div>
             <Button type="submit" className="w-full">
-              Verify
+              {isBlocked ? "Blocked" : "Verify"}
             </Button>
           </form>
         </CardContent>

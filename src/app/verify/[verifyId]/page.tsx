@@ -53,6 +53,7 @@ export default function Component() {
       toast({
         title: "Incorrect code",
         description: "The code you entered is incorrect.",
+        variant: "destructive"
       });
     }
   }
