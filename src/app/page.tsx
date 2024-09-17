@@ -17,27 +17,120 @@ export default function Component() {
 
   const router = useRouter();
   const isBrowser = () => typeof window !== "undefined";
-  const getIsRedirected = () => {
-    if (isBrowser()) {
-      const isRedirected = localStorage.getItem("redirected");
-      if(isRedirected) router.replace("/captcha")
+
+  useEffect(()=> {
+    async function getCaptcha(){
+      const res = await axios.get("/api/getCaptcha");
+      setCaptchaChars(res.data.message);
+      const temp = res.data.message.join("");
+      setCorrectSequence(temp);
     }
-  };
-
-  getIsRedirected();
-
-  useEffect(()=>{
-		async function getUserData(){
-      const response = await axios.get("/api/userData");
-      if(response.data.redirectTo){
-        localStorage.clear();
-        localStorage.setItem("redirected", "true");
-        router.replace("/captcha");
-      }
+    async function getUserData(){
+      const res = await axios.get("/api/userData");
     }
 
     getUserData();
-	},[])
+    getCaptcha();
+  },[]);
+
+  useEffect(() => {
+
+    const blockTime = getBlockTime();
+		if (blockTime && Date.now() < blockTime) {
+			setIsBlocked(true);
+			const remainingTime = Math.floor((blockTime - Date.now()) / 1000);
+			setSeconds(remainingTime);
+			const blockInterval = setInterval(() => {
+				setSeconds((prev) => prev - 1);
+				if (remainingTime <= 0) {
+					clearInterval(blockInterval);
+					setIsBlocked(false);
+					localStorage.removeItem("blockTime");
+				}
+			}, 1000);
+			return () => clearInterval(blockInterval);
+		}
+
+    const timerInterval = setInterval(() => {
+      setSeconds((prevSeconds) => {
+        if (prevSeconds > 0) {
+          localStorage.setItem("seconds", (prevSeconds - 1).toString());
+          return prevSeconds - 1;
+        } else {
+          localStorage.clear();
+          window.location.reload();
+        }
+        clearInterval(timerInterval);
+        return 0;
+      });
+    }, 1000);
+
+    return () => clearInterval(timerInterval);
+  }, []);
+
+  const getBlockTime = () => {
+		if (isBrowser()) {
+			const storedBlockTime = localStorage.getItem("blockTime");
+			return storedBlockTime ? parseInt(storedBlockTime) : null;
+		}
+		return null;
+	};
+
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const value = e.target.value.toUpperCase();
+    setInputValues((prev) => {
+      const newInputValues = [...prev];
+      newInputValues[index] = value;
+      return newInputValues;
+    });
+
+    // Move focus to the next input
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`captcha-input-${index + 1}`);
+      nextInput?.focus();
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+   e.preventDefault();
+		const correctSequence = captchaChars.join("");
+
+		if (isBlocked) {
+			toast({title:"You are blocked. Please try again after 1 minute."});
+			return;
+		}
+
+		if (inputValues.join("") === correctSequence) {
+			alert("Solved!");
+			const id = createId();
+			router.replace(`/verify/${id}`);
+		} else {
+			const newAttempts = incorrectAttempts + 1;
+			setIncorrectAttempts(newAttempts);
+
+			if (newAttempts >= 2) {
+				
+				fetch("/api/blockUser", { method: "POST", body: JSON.stringify({ id: createId() }) })
+					.then(() => {
+						const blockTime = Date.now() + 60000; 
+						localStorage.setItem("blockTime", blockTime.toString());
+						setIsBlocked(true);
+						setSeconds(60); 
+						toast({title:"You have been blocked for 1 minute."});
+						router.replace("/blocked"); 
+					})
+					.catch((error) => console.error("API Error:", error));
+			} else {
+				toast({title:"Incorrect, try again!"});
+			}
+		}
+  };
+  
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b">
