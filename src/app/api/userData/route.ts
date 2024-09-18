@@ -24,7 +24,7 @@ export async function GET(req: Request) {
         time: { $gte: currentTime - 60*5 }
       });
 
-      if (suspiciousRequests >= 3) {
+      if (suspiciousRequests >= 20) {
         redirectTo = '/captcha';
       }
 
@@ -37,7 +37,7 @@ export async function GET(req: Request) {
 
       console.log("similarBehaviorRequests: ", similarBehaviorRequests);
 
-      if (similarBehaviorRequests >= 3) {
+      if (similarBehaviorRequests >= 20) {
         redirectTo = '/captcha';
       }
 
@@ -48,7 +48,7 @@ export async function GET(req: Request) {
 
       console.log("surgeInPageRequests: ", surgeInPageRequests);
 
-      if (surgeInPageRequests >= 3) {
+      if (surgeInPageRequests >= 20) {
         redirectTo = '/captcha';
       }
 
