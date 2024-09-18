@@ -435,7 +435,7 @@ export default function Component() {
       <div className="mb-12">
         <h6 className="text-sm font-semibold mb-2">Connect</h6>
         <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-        <p className="text-muted-foreground">We@apos;re here to assist with your inquiries.</p>
+        <p className="text-muted-foreground">We&apos;re here to assist with your inquiries.</p>
       </div>
       
       <div className="grid md:grid-cols-2 gap-8">
@@ -471,30 +471,21 @@ export default function Component() {
           </div>
         </div>
         
-        <div className="bg-muted rounded-lg aspect-video flex items-center justify-center">
-          <svg
-            className=" text-muted-foreground"
-            fill="none"
-            height="24"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect height="18" rx="2" ry="2" width="18" x="3" y="3" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <path d="M21 15l-5-5L5 21" />
-          </svg>
+        <div className="bg-muted rounded-lg aspect-video flex items-center justify-center overflow-hidden">
+        <Image
+              src="/Map.png"
+              alt="Defence Image 1"
+              width={783}
+              height={763}
+              className="w-full  h-full object-cover"
+            />
         </div>
       </div>
       
       <div className="mt-16 border-t pt-8">
         <div className="grid md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
-            <h3 className="text-2xl font-bold mb-4">Logo</h3>
+            <h3 className="text-2xl font-bold mb-4">Ministry of Defence</h3>
             <p className="text-sm text-muted-foreground mb-4">Subscribe to our newsletter for the latest updates on features and releases.</p>
             <form className="flex gap-2">
               <Input placeholder="Your email here" type="email" />
