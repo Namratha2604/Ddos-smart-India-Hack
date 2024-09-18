@@ -86,28 +86,28 @@ export default function Component() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Image
-              src="/placeholder.svg"
+              src="/1st im.jpg"
               alt="Defence Image 1"
               width={300}
               height={200}
               className="w-full h-48 object-cover rounded-lg"
             />
             <Image
-              src="/placeholder.svg"
+              src="/2nd img.avif"
               alt="Defence Image 2"
               width={300}
               height={200}
               className="w-full h-48 object-cover rounded-lg"
             />
             <Image
-              src="/placeholder.svg"
+              src="/3rd img.avif"
               alt="Defence Image 3"
               width={300}
               height={200}
               className="w-full h-48 object-cover rounded-lg"
             />
             <Image
-              src="/placeholder.svg"
+              src="/4th img.webp"
               alt="Defence Image 4"
               width={300}
               height={200}

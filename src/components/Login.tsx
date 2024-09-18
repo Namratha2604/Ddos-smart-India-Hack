@@ -1,10 +1,8 @@
 "use client";
-import { useEffect } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { signIn } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
