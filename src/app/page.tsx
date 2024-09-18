@@ -8,7 +8,7 @@ import { Shield, Target } from "lucide-react"
 import { Box } from "lucide-react"
 import { useEffect } from "react"
 import axios from "axios"
-import { redirect, useRouter } from "next/navigation"
+import {  useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Star } from "lucide-react"
 import { Mail, Phone, MapPin, ChevronRight } from "lucide-react"
@@ -394,7 +394,7 @@ export default function Component() {
                   <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                 ))}
               </div>
-              <p className="text-lg font-medium">"{testimonial.quote}"</p>
+              <p className="text-lg font-medium">{testimonial.quote}</p>
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-gray-200 rounded-full" />
                 <div>
@@ -435,7 +435,7 @@ export default function Component() {
       <div className="mb-12">
         <h6 className="text-sm font-semibold mb-2">Connect</h6>
         <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-        <p className="text-muted-foreground">We're here to assist with your inquiries.</p>
+        <p className="text-muted-foreground">We@apos;re here to assist with your inquiries.</p>
       </div>
       
       <div className="grid md:grid-cols-2 gap-8">
