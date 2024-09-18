@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { signIn } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 
 export function Login() {
@@ -39,13 +40,7 @@ export function Login() {
 		router.replace("/");
 	}
 
-  useEffect(()=>{
-		async function getUserData(){
-      	await axios.get("/api/userData");
-    	}
-
-    getUserData();
-	},[])
+  
 
 	return (
 		<div className="flex items-center justify-center min-h-screen">
@@ -99,6 +94,10 @@ export function Login() {
 					<BottomGradient />
 				</button>
 			</form>
+
+			<div className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300 text-center">
+				Don&apos;t have an account <Link href={"/signup"} className="font-extrabold hover:underline">Sign Up</Link>
+			</div>
 		</div>
 		</div>
 	);

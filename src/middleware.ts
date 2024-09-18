@@ -8,6 +8,7 @@ export async function middleware() {
 	// 	url.pathname.startsWith("/signup") ||
 	// 	url.pathname.startsWith("/captcha");
 
+	
 
 	
 

@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -5,8 +6,35 @@ import { ChevronDown } from "lucide-react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Shield, Target } from "lucide-react"
 import { Box } from "lucide-react"
+import { useEffect } from "react"
+import axios from "axios"
+import { useRouter } from "next/navigation"
 
 export default function Component() {
+
+  const router = useRouter();
+  const isBrowser = () => typeof window !== "undefined";
+  const getIsRedirected = () => {
+    if (isBrowser()) {
+      const isRedirected = localStorage.getItem("redirected");
+      if(isRedirected) router.replace("/captcha")
+    }
+  };
+
+  getIsRedirected();
+
+  useEffect(()=>{
+		async function getUserData(){
+      const response = await axios.get("/api/userData");
+      if(response.data.redirectTo){
+        localStorage.clear();
+        localStorage.setItem("redirected", "true");
+        router.replace("/captcha");
+      }
+    }
+
+    getUserData();
+	},[])
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b">
