@@ -1,17 +1,18 @@
 "use client";
-import { useState } from "react";
+import { useEffect } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { useSession, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
+
 
 export function Login() {
-	const router = useRouter();
-	const { data: session, status } = useSession();
 	const {toast} = useToast();
+  const router = useRouter(); 
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -36,8 +37,10 @@ export function Login() {
 		}
 
 		toast({title: "Logged in Successfully"})
-		router.replace("/home");
+		router.replace("/");
 	}
+
+  
 
 	return (
 		<div className="flex items-center justify-center min-h-screen">
@@ -68,7 +71,21 @@ export function Login() {
 						name="password"
 					/>
 				</LabelInputContainer>
-
+				{/* <div className="captcha-box">
+					<p>Click on any icon that appears the most number of times:</p>
+					<div className="captcha-inline">
+						{captchaOptions.counts.map((count, index) => (
+						<button
+							type="button"
+							key={index}
+							className="captcha-button"
+							onClick={() => handleCaptchaClick(index)}
+						>
+							<span>{count}</span>
+						</button>
+						))}
+					</div>
+				</div> */}
 				<button
 					className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-800 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
 					type="submit"
@@ -77,6 +94,10 @@ export function Login() {
 					<BottomGradient />
 				</button>
 			</form>
+
+			<div className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300 text-center">
+				Don&apos;t have an account <Link href={"/signup"} className="font-extrabold hover:underline">Sign Up</Link>
+			</div>
 		</div>
 		</div>
 	);

@@ -9,34 +9,41 @@ export const authOptions: NextAuthOptions = {
 		CredentialsProvider({
 			id: "credentials",
 			name: "credentials",
-			async authorize(credentials: any): Promise<any> {
+			async authorize(credentials: Record<"email" | "password", string> | undefined) {
 				await connectDb();
 				try {
-					const { email, password } = credentials;
-					const user = await User.findOne({
-						email,
-					});
-					if (!user) {
+					// Check if credentials are available
+					if (!credentials?.email || !credentials.password) {
 						return null;
 					}
+
+					const { email, password } = credentials;
+					
+					// Find user by email
+					const user = await User.findOne({ email });
+					if (!user) {
+						return null; // User not found
+					}
+
+					// Compare passwords
 					const isPasswordCorrect = await bcrypt.compare(
 						password,
 						user.password,
 					);
 
 					if (isPasswordCorrect) {
-						return user;
+						return user; // Return user if password matches
 					} else {
-						return null;
+						return null; // Return null if password is incorrect
 					}
-				} catch (error: any) {
-					return null;
+				} catch (error: unknown) {
+					return null; // Catch any errors and return null
 				}
 			},
 			credentials: {
 				email: {
 					label: "Email",
-					type: "text ",
+					type: "text",
 					placeholder: "johndoe69@gmail.com",
 				},
 				password: {

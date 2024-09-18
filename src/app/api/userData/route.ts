@@ -1,33 +1,84 @@
 import axios from "axios";
-
-export async function GET(req:Request, res: Response){
-   console.log(req);
-   const ip = req.headers.get('x-forwarded-for') ;
-   const method = req.method;
-   const protocol = req.headers.get('x-forwarded-proto') 
-   const currentTime = Date.now();
-   const date = new Date(currentTime);
-   const hours = date.getHours().toString().padStart(2, '0'); // Zero-padded hours
-   const minutes = date.getMinutes().toString().padStart(2, '0'); // Zero-padded minutes
-   const seconds = date.getSeconds().toString().padStart(2, '0'); // Zero-padded seconds
-   const formattedTime = `${hours}:${minutes}:${seconds}`;
-
-   const apikey = "920671e52fd64b07b7bed66c8ecb97d7";
-   const apiUrl = `https://api.ipgeolocation.io/ipgeo?apiKey=${apikey}`;
-   
-
-   // const userAgent = await axios.get(`https://api.ipgeolocation.io/user-agent?apiKey=${apikey}`)
-   
-   // const response = await axios.get(apiUrl);
+import DataSet from "@/models/dataset.model"; 
+import { connectDb } from "@/database/db.config";
+import { NextResponse } from "next/server";
 
 
-   console.log(formattedTime);
-   console.log(ip,  method, protocol);
-   // const { country_name, state_prov, city, latitude, longitude } = response.data;
+export async function GET(req: Request) {
+  try {
+    await connectDb();
 
+    const method = req.method;
+    const protocol = req.headers.get('x-forwarded-proto') || "http";
+    const host = req.headers.get('host');
+    const baseUrl = `${protocol}://${host}`;
+    const currentTime = Math.floor(Date.now() / 1000);
+    const port = req.headers.get('x-forwarded-port') || 80;
+    const ip = req.headers.get('x-forwarded-for') || req.headers.get('remote-addr'); 
 
-   // console.log(country_name, state_prov, city,latitude, longitude);
-   
+    const res = await axios.get(`https://ip.ba3a.tech`);
+    console.log(res.data)
 
-   return Response.json({ success: true, message: "lund" }, { status: 200 });
+    let redirectTo = null;
+
+    if (res.data) {
+      const suspiciousRequests = await DataSet.countDocuments({ 
+        ip: res.data.ip,
+        time: { $gte: currentTime - 60*5 }
+      });
+
+      if (suspiciousRequests >= 1) {
+        redirectTo = '/captcha';
+      }
+
+      const similarBehaviorRequests = await DataSet.countDocuments({
+        'location.country': res.data.country,
+        'location.city': res.data.city,
+        'browser': req.headers.get('user-agent'),
+        time: { $gte: currentTime - 60 },
+      });
+
+      console.log("similarBehaviorRequests: ", similarBehaviorRequests);
+
+      if (similarBehaviorRequests >= 1) {
+        redirectTo = '/captcha';
+      }
+
+      const surgeInPageRequests = await DataSet.countDocuments({
+        method: "GET",
+        time: { $gte: currentTime - 60*5 }
+      });
+
+      console.log("surgeInPageRequests: ", surgeInPageRequests);
+
+      if (surgeInPageRequests >= 1) {
+        redirectTo = '/captcha';
+      }
+
+      await DataSet.create({
+        ip: res.data.ip,
+        location: {
+          country: res.data.country,
+          city: res.data.city,
+        },
+        protocol,
+        time: currentTime,
+        port: Number(port),
+        method,
+        isp: res.data.isp,
+        org: res.data.org,
+        browser: req.headers.get('user-agent'),
+      });
+    }
+
+    if (redirectTo) {
+      return NextResponse.json({ success: true, redirectTo }, { status: 200 });
+    }
+
+    return NextResponse.json({ success: true, message: "Request allowed" }, { status: 200 });
+
+  } catch (error) {
+    console.error("Error:", error);
+    return NextResponse.json({ success: false, message: "Failed to process request" }, { status: 500 });
+  }
 }

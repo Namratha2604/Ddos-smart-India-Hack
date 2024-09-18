@@ -6,11 +6,35 @@ import { ChevronDown } from "lucide-react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Shield, Target } from "lucide-react"
 import { Box } from "lucide-react"
-import { Star } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Mail, Phone, MapPin, ChevronRight } from "lucide-react"
+import { useEffect } from "react"
+import axios from "axios"
+import { useRouter } from "next/navigation"
 
 export default function Component() {
+
+  const router = useRouter();
+  const isBrowser = () => typeof window !== "undefined";
+  const getIsRedirected = () => {
+    if (isBrowser()) {
+      const isRedirected = localStorage.getItem("redirected");
+      if(isRedirected) router.replace("/captcha")
+    }
+  };
+
+  getIsRedirected();
+
+  useEffect(()=>{
+		async function getUserData(){
+      const response = await axios.get("/api/userData");
+      if(response.data.redirectTo){
+        localStorage.clear();
+        localStorage.setItem("redirected", "true");
+        router.replace("/captcha");
+      }
+    }
+
+    getUserData();
+	},[])
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b">
@@ -175,7 +199,7 @@ export default function Component() {
       
       <div className="flex flex-col md:flex-row gap-8 items-center">
         <div className="md:w-1/2">
-          <h2 className="text-2xl font-bold mb-4">Key Statistics of India's Defence Forces</h2>
+          <h2 className="text-2xl font-bold mb-4">Key Statistics of India&apos;s Defence Forces</h2>
           <p className="mb-4">
             India boasts one of the largest armed forces in the world, with over 1.4 million active personnel. Our commitment to national security is reflected in our robust defense capabilities.
           </p>
@@ -233,7 +257,7 @@ export default function Component() {
       
       <div className="flex flex-col md:flex-row gap-8 items-center">
         <div className="md:w-1/2">
-          <h2 className="text-2xl font-bold mb-4">Key Statistics of India's Defence Forces</h2>
+          <h2 className="text-2xl font-bold mb-4">Key Statistics of India&apos;s Defence Forces</h2>
           <p className="mb-4">
             India boasts one of the largest armed forces in the world, with over 1.4 million active personnel. Our commitment to national security is reflected in our robust defense capabilities.
           </p>
@@ -259,7 +283,7 @@ export default function Component() {
         <div>
           <h1 className="text-4xl font-bold mb-4">Understanding the Ministry of Defence Structure</h1>
           <p className="text-lg text-muted-foreground">
-            The Ministry of Defence plays a crucial role in ensuring national security and defense policy formulation. It oversees the armed forces and coordinates with various departments to maintain operational readiness. Through strategic planning and resource management, the ministry safeguards the nation's interests.
+            The Ministry of Defence plays a crucial role in ensuring national security and defense policy formulation. It oversees the armed forces and coordinates with various departments to maintain operational readiness. Through strategic planning and resource management, the ministry safeguards the nation&apos;s interests.
           </p>
         </div>
       </div>
@@ -335,192 +359,6 @@ export default function Component() {
               </CardFooter>
             </Card>
           ))}
-        </div>
-      </div>
-    </div>
-    <div className="container mx-auto px-4 py-8 space-y-12">
-      <section className="space-y-4">
-        <h2 className="text-3xl font-bold">What They Say</h2>
-        <p className="text-lg text-muted-foreground">
-          Their experiences shape our mission and commitment to excellence.
-        </p>
-        <div className="grid md:grid-cols-2 gap-6">
-          {[
-            {
-              quote: "The support from the Ministry has been invaluable to us.",
-              name: "Rajesh Kumar",
-              title: "Captain, Indian Army",
-            },
-            {
-              quote: "Working together, we achieve greater security for our nation.",
-              name: "Anita Sharma",
-              title: "Major, Defence Ministry",
-            },
-          ].map((testimonial, index) => (
-            <Card key={index}>
-              <CardContent className="p-6 space-y-4">
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-current text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-lg font-medium">"{testimonial.quote}"</p>
-                <div className="flex items-center space-x-4">
-                  <Image
-                    src="/placeholder.svg"
-                    alt={testimonial.name}
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  />
-                  <div>
-                    <p className="font-semibold">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.title}</p>
-                  </div>
-                  <Image
-                    src="/placeholder.svg"
-                    alt="Webflow"
-                    width={80}
-                    height={30}
-                    className="ml-auto"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-3xl font-bold">Join Us in Serving India</h2>
-        <p className="text-lg text-muted-foreground">
-          Discover how you can make a difference today.
-        </p>
-        <div className="flex space-x-4">
-          <Button variant="default">Learn More</Button>
-          <Button variant="outline">Get Involved</Button>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-3xl font-bold">Stay Informed with Our Newsletter</h2>
-        <p className="text-lg text-muted-foreground">
-          Subscribe to receive the latest updates and important announcements from the Ministry of Defence.
-        </p>
-        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
-          <div className="flex space-x-4">
-            <Input type="email" placeholder="Your Email Here" className="flex-grow" />
-
-            <Button type="submit">Subscribe Now</Button>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            By clicking Subscribe Now, you agree to our Terms and Conditions.
-          </p>
-        </form>
-      </section>
-    </div>
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="mb-12">
-        <h6 className="text-sm font-semibold mb-2">Connect</h6>
-        <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-        <p className="text-muted-foreground">We're here to assist with your inquiries.</p>
-      </div>
-      
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="space-y-8">
-          <div>
-            <div className="flex items-center mb-2">
-              <Mail className="mr-2 h-5 w-5" />
-              <h2 className="text-xl font-semibold">Email</h2>
-            </div>
-            <p className="text-sm text-muted-foreground mb-1">Reach us via email.</p>
-            <a href="mailto:info@mod.gov.in" className="text-primary hover:underline">info@mod.gov.in</a>
-          </div>
-          
-          <div>
-            <div className="flex items-center mb-2">
-              <Phone className="mr-2 h-5 w-5" />
-              <h2 className="text-xl font-semibold">Phone</h2>
-            </div>
-            <p className="text-sm text-muted-foreground mb-1">Call us anytime.</p>
-            <a href="tel:+911234567890" className="text-primary hover:underline">+91 12345 67890</a>
-          </div>
-          
-          <div>
-            <div className="flex items-center mb-2">
-              <MapPin className="mr-2 h-5 w-5" />
-              <h2 className="text-xl font-semibold">Office</h2>
-            </div>
-            <p className="text-sm text-muted-foreground mb-1">Ministry of Defence, New Delhi, India</p>
-            <a href="#" className="text-primary hover:underline inline-flex items-center">
-              Get Directions
-              <ChevronRight className="ml-1 h-4 w-4" />
-            </a>
-          </div>
-        </div>
-        
-        <div className="bg-muted rounded-lg aspect-video flex items-center justify-center">
-          <svg
-            className=" text-muted-foreground"
-            fill="none"
-            height="24"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect height="18" rx="2" ry="2" width="18" x="3" y="3" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <path d="M21 15l-5-5L5 21" />
-          </svg>
-        </div>
-      </div>
-      
-      <div className="mt-16 border-t pt-8">
-        <div className="grid md:grid-cols-4 gap-8">
-          <div className="md:col-span-2">
-            <h3 className="text-2xl font-bold mb-4">Logo</h3>
-            <p className="text-sm text-muted-foreground mb-4">Subscribe to our newsletter for the latest updates on features and releases.</p>
-            <form className="flex gap-2">
-              <Input placeholder="Your email here" type="email" />
-              <Button type="submit">Join</Button>
-            </form>
-            <p className="text-xs text-muted-foreground mt-2">By subscribing, you consent to our Privacy Policy and receive updates from us.</p>
-          </div>
-          
-          <div>
-            <h4 className="font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-muted-foreground hover:text-primary">About Us</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Contact Us</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Support Center</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Careers</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary">FAQ</a></li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="font-semibold mb-4">Connect With Us</h4>
-            <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Events</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Newsroom</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Resources</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Blog</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Community</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      
-      <div className="mt-8 border-t pt-8 flex flex-col md:flex-row justify-between items-center">
-        <p className="text-sm text-muted-foreground">© 2024 Ministry of Defence. All rights reserved.</p>
-        <div className="flex gap-4 mt-4 md:mt-0">
-          <a href="#" className="text-muted-foreground hover:text-primary">Privacy Policy</a>
-          <a href="#" className="text-muted-foreground hover:text-primary">Terms of Use</a>
-          <a href="#" className="text-muted-foreground hover:text-primary">Cookie Settings</a>
         </div>
       </div>
     </div>
