@@ -6,6 +6,7 @@ import { cn } from "../lib/utils";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export function SignUp() {
 	const router = useRouter();
@@ -82,7 +83,11 @@ export function SignUp() {
 					<BottomGradient />
 				</button>
 			</form>
+			<div className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300 text-center">
+				Already have an account <Link href={"/login"} className="font-extrabold hover:underline">Login</Link>
+			</div>
 		</div>
+		
 		</div>
 	);
 }

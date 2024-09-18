@@ -121,7 +121,7 @@ export default function VerificationPage() {
 		}
 
 		if (inputValues.join("") === correctSequence) {
-			alert("Solved!");
+			toast({title: "You have sucessfully solved this captcha!"});
 			const id = createId();
 			router.replace(`/verify/${id}`);
 		} else {
