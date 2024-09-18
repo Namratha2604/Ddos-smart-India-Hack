@@ -35,7 +35,7 @@ export function Login() {
 		}
 
 		toast({title: "Logged in Successfully"})
-		router.replace("/");
+		router.replace("/dashboard");
 	}
 
   
