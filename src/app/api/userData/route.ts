@@ -10,11 +10,8 @@ export async function GET(req: Request) {
 
     const method = req.method;
     const protocol = req.headers.get('x-forwarded-proto') || "http";
-    const host = req.headers.get('host');
-    const baseUrl = `${protocol}://${host}`;
     const currentTime = Math.floor(Date.now() / 1000);
     const port = req.headers.get('x-forwarded-port') || 80;
-    const ip = req.headers.get('x-forwarded-for') || req.headers.get('remote-addr'); 
 
     const res = await axios.get(`https://ip.ba3a.tech`);
     console.log(res.data)
@@ -27,7 +24,7 @@ export async function GET(req: Request) {
         time: { $gte: currentTime - 60*5 }
       });
 
-      if (suspiciousRequests >= 1) {
+      if (suspiciousRequests >= 10000) {
         redirectTo = '/captcha';
       }
 
@@ -40,7 +37,7 @@ export async function GET(req: Request) {
 
       console.log("similarBehaviorRequests: ", similarBehaviorRequests);
 
-      if (similarBehaviorRequests >= 1) {
+      if (similarBehaviorRequests >= 10000) {
         redirectTo = '/captcha';
       }
 
@@ -51,7 +48,7 @@ export async function GET(req: Request) {
 
       console.log("surgeInPageRequests: ", surgeInPageRequests);
 
-      if (surgeInPageRequests >= 1) {
+      if (surgeInPageRequests >= 10000) {
         redirectTo = '/captcha';
       }
 
