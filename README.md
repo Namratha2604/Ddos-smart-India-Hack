@@ -37,4 +37,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 
 ## Our website Link
-https://ddos-smart-india-hack-2rj2f0b4v-namratha2604s-projects.vercel.app/captcha
+https://ddos-smart-india-hack-2rj2f0b4v-namratha2604s-projects.vercel.app
